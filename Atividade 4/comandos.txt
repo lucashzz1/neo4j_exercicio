@@ -1,0 +1,51 @@
+Etapa 1
+
+CREATE (gabriel:Pessoa {nome: "Gabriel", pais: "Canadá", estado_civil: "Namorando"}),
+       (carol:Pessoa {nome: "Carol", pais: "Brasil"}),
+       (foto:Foto {legenda: "Meu cachorro"}),
+       (gabriel)-[:SEGUE]->(carol),
+       (carol)-[:SEGUE]->(gabriel),
+       (carol)-[:ADICIONOU]->(foto),
+       (gabriel)-[:CURTIU {data: "2019-01-01"}]->(foto)
+RETURN gabriel, carol, foto
+
+
+Etapa 2
+
+
+MATCH (p:Pessoa {nome: "Gabriel"}) RETURN p.nome, p.pais
+
+MATCH (:Pessoa {nome: "Carol"})-[:ADICIONOU]->(f:Foto) RETURN f.legenda
+
+MATCH (seguidor:Pessoa)-[:SEGUE]->(:Pessoa {nome: "Carol"}) RETURN count(seguidor)
+
+MATCH (f:Foto) RETURN count(f)
+
+MATCH (p:Pessoa) WHERE p.estado_civil IS NULL RETURN p.nome
+
+MATCH (:Pessoa)-[:CURTIU]->(f:Foto {legenda: "Meu cachorro"}) RETURN count(*)
+
+
+Etapa 3
+
+
+MATCH (c:Pessoa {nome: "Carol"}) SET c.estado_civil = "Casada" RETURN c
+
+MATCH (g:Pessoa {nome: "Gabriel"}) DETACH DELETE g
+
+CREATE (l:Pessoa {nome: "Linda", pais: "EUA", estado_civil: "Solteira"}) RETURN l
+
+MATCH (l:Pessoa {nome: "Linda"}), (c:Pessoa {nome: "Carol"})
+CREATE (l)-[:SEGUE]->(c), (c)-[:SEGUE]->(l)
+RETURN l, c
+
+MATCH (l:Pessoa {nome: "Linda"})
+CREATE (l)-[:ADICIONOU]->(f:Foto {legenda: "Ingressando na rede!"})
+RETURN l, f
+
+MATCH (c:Pessoa {nome: "Carol"}), (f:Foto {legenda: "Ingressando na rede!"})
+CREATE (c)-[r:CURTIU {data: "2026-11-15"}]->(f)
+RETURN c, r, f
+
+MATCH (:Pessoa)-[:CURTIU]->(f:Foto {legenda: "Ingressando na rede!"}) RETURN count(*)
+```[cite: 16]
